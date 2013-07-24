@@ -28,7 +28,7 @@ ifeq ($(shell uname -s), Darwin)
   DL_NAME = mosektoolsosx64x86.tar.bz2
 else ifeq ($(shell uname -s), Linux)
   ifeq ($(shell uname -m), x86_64)
-    DL_NAME = mosektoolsosx64x86.tar.bz2
+    DL_NAME = mosektoolslinux64x86.tar.bz2
   else
     DL_NAME = mosektoolslinux32x86.tar.bz2
   endif
@@ -39,8 +39,9 @@ endif
 all: $(UNZIP_DIR) $(BUILD_PREFIX)/matlab/addpath_mosek.m $(BUILD_PREFIX)/matlab/rmpath_mosek.m $(HOME)/mosek/mosek.lic
 
 $(UNZIP_DIR):
-	wget --no-check-certificate $(DL_PATH)/$(DL_NAME) && tar -xzf $(DL_NAME) -C .. && rm $(DL_NAME)
+	wget --no-check-certificate $(DL_PATH)/$(DL_NAME) && tar -xjf $(DL_NAME) -C .. && rm $(DL_NAME)
 
+# note that there are only two folders (r2012a, r2013a) on mac, but there are more on linux.  i've only supported the two below
 $(BUILD_PREFIX)/matlab/addpath_mosek.m : Makefile
 	@mkdir -p $(BUILD_PREFIX)/matlab
 	echo "Writing $(BUILD_PREFIX)/matlab/addpath_mosek.m"
