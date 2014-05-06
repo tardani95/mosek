@@ -25,16 +25,18 @@ endif
 DL_PATH   = http://download.mosek.com/stable/7
 UNZIP_DIR = 7
 ifeq ($(shell uname -s), Darwin)
-  DL_NAME = mosektoolsosx64x86.tar.bz2
+  PLATFORM_NAME = osx64x86
 else ifeq ($(shell uname -s), Linux)
   ifeq ($(shell uname -m), x86_64)
-    DL_NAME = mosektoolslinux64x86.tar.bz2
+    PLATFORM_NAME = linux64x86
   else
-    DL_NAME = mosektoolslinux32x86.tar.bz2
+    PLATFORM_NAME = linux32x86
   endif
-else 
+else
   # throw an error?
 endif
+
+DL_NAME = mosektools$(PLATFORM_NAME).tar.bz2
 
 all: $(UNZIP_DIR) $(BUILD_PREFIX)/matlab/addpath_mosek.m $(BUILD_PREFIX)/matlab/rmpath_mosek.m $(HOME)/mosek/mosek.lic
 
@@ -55,6 +57,7 @@ $(BUILD_PREFIX)/matlab/addpath_mosek.m : Makefile
 		else\n \
 	          d='r2013a';\n \
 	        end\n \
+	    javaaddpath(fullfile('$(shell pwd)','7','tools','platform','$(PLATFORM_NAME)','bin','mosekmatlab.jar'));\n \
 		addpath(fullfile('$(shell pwd)','7','toolbox',d));\n" \
 		> $(BUILD_PREFIX)/matlab/addpath_mosek.m
 
@@ -71,13 +74,14 @@ $(BUILD_PREFIX)/matlab/rmpath_mosek.m : Makefile
 		else\n \
 	          d='r2013a';\n \
 	        end\n \
+	    javarmpath(fullfile('$(shell pwd)','7','tools','platform','$(PLATFORM_NAME)','bin','mosekmatlab.jar'));\n \
 		rmpath(fullfile('$(shell pwd)','7','toolbox',d));\n" \
 		> $(BUILD_PREFIX)/matlab/rmpath_mosek.m
 
 # todo: make this logic more robust:
 #   check for license path environment variable
 #   check expiration date in mosek.lic if it is found
-$(HOME)/mosek/mosek.lic : 
+$(HOME)/mosek/mosek.lic :
 	@echo "You do not appear to have a license for mosek installed in $(HOME)/mosek/mosek.lic\n"
 	@echo "Open the following url in your favorite browser and request the license:\n"
 	@echo "           http://license.mosek.com/license2/academic/\n"
