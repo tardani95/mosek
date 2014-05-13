@@ -38,7 +38,7 @@ endif
 
 DL_NAME = mosektools$(PLATFORM_NAME).tar.bz2
 
-all: $(UNZIP_DIR) $(BUILD_PREFIX)/matlab/addpath_mosek.m $(BUILD_PREFIX)/matlab/rmpath_mosek.m $(HOME)/mosek/mosek.lic
+all: $(UNZIP_DIR) $(BUILD_PREFIX)/matlab/addpath_mosek.m $(BUILD_PREFIX)/matlab/rmpath_mosek.m $(HOME)/mosek/mosek.lic $(BUILD_PREFIX)/lib/python2.7/site-packages/mosek/__init__.py
 
 $(UNZIP_DIR):
 	wget --no-check-certificate $(DL_PATH)/$(DL_NAME) && tar -xjf $(DL_NAME) -C .. && rm $(DL_NAME)
@@ -78,6 +78,10 @@ $(BUILD_PREFIX)/matlab/rmpath_mosek.m : Makefile
 		rmpath(fullfile('$(shell pwd)','7','toolbox',d));\n" \
 		> $(BUILD_PREFIX)/matlab/rmpath_mosek.m
 
+$(BUILD_PREFIX)/lib/python2.7/site-packages/mosek/__init__.py: Makefile
+	python $(UNZIP_DIR)/tools/platform/$(PLATFORM_NAME)/python/2/setup.py install --prefix=$(BUILD_PREFIX) --record $(shell pwd)/python_install_manifest.txt
+	pwd
+
 # todo: make this logic more robust:
 #   check for license path environment variable
 #   check expiration date in mosek.lic if it is found
@@ -89,3 +93,4 @@ $(HOME)/mosek/mosek.lic :
 
 clean:
 	-rm $(BUILD_PREFIX)/matlab/*path_mosek.m
+	cat python_install_manifest.txt | xargs rm -rf
