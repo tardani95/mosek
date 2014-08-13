@@ -88,7 +88,7 @@ $(BUILD_PREFIX)/lib/python2.7/site-packages/mosek/__init__.py: Makefile
 $(HOME)/mosek/mosek.lic :
 	@echo >&2 "You do not appear to have a license for mosek installed in $(HOME)/mosek/mosek.lic\n"
 	@echo >&2 "Open the following url in your favorite browser and request the license:\n"
-	@echo >&2 "           http://license.mosek.com/license2/academic/\n"
+	@echo >&2 "           http://license.mosek.com/academic/\n"
 	@echo >&2 "Then check your email for the license file and put it in $(HOME)/mosek/mosek.lic\n"
 	exit 1
 
