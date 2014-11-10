@@ -78,7 +78,7 @@ $(BUILD_PREFIX)/matlab/rmpath_mosek.m : Makefile
 		rmpath(fullfile('$(shell pwd)','7','toolbox',d));\n" \
 		> $(BUILD_PREFIX)/matlab/rmpath_mosek.m
 
-$(BUILD_PREFIX)/lib/python2.7/site-packages/mosek/__init__.py: Makefile
+$(BUILD_PREFIX)/lib/python2.7/site-packages/mosek/__init__.py: Makefile $(UNZIP_DIR)
 	python $(UNZIP_DIR)/tools/platform/$(PLATFORM_NAME)/python/2/setup.py install --prefix=$(BUILD_PREFIX) --record $(shell pwd)/python_install_manifest.txt
 	pwd
 
