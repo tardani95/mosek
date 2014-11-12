@@ -57,9 +57,12 @@ $(BUILD_PREFIX)/matlab/addpath_mosek.m : Makefile
 		else\n \
 	          d='r2013a';\n \
 	        end\n \
-	    javaaddpath(fullfile('$(shell pwd)','7','tools','platform','$(PLATFORM_NAME)','bin','mosekmatlab.jar'));\n \
-		addpath(fullfile('$(shell pwd)','7','toolbox',d));\n" \
+	    javaaddpathProtectGlobals(fullfile('$(shell pwd)','7','tools','platform','$(PLATFORM_NAME)','bin','mosekmatlab.jar'));\n \
+		addpath(fullfile('$(shell pwd)','7','toolbox',d));\n \
+		end\n \
+		\n" \
 		> $(BUILD_PREFIX)/matlab/addpath_mosek.m
+	cat javaaddpathProtectGlobals.m >> $(BUILD_PREFIX)/matlab/addpath_mosek.m
 
 $(BUILD_PREFIX)/matlab/rmpath_mosek.m : Makefile
 	@mkdir -p $(BUILD_PREFIX)/matlab
