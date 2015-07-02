@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 2.6.0)
 set(POD_NAME mosek)
 include(cmake/pods.cmake)
 
+# Set up the system name and various paths
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	set(PLATFORM_NAME "osx64x86" )
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -24,16 +25,23 @@ endif()
 
 set(DL_PATH "http://download.mosek.com/stable/7")
 set(DL_NAME "mosektools${PLATFORM_NAME}.tar.bz2")
+set(MOSEK_PLATFORM_PATH "${CMAKE_CURRENT_BINARY_DIR}/mosek/7/tools/platform/${PLATFORM_NAME}")
 
+# Download and unzip the source
+message("Downloading and extracting Mosek files from ${DL_PATH}/${DL_NAME} ...")
 file(DOWNLOAD "${DL_PATH}/${DL_NAME}" "${CMAKE_CURRENT_BINARY_DIR}/${DL_NAME}")
 execute_process(
      COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_CURRENT_BINARY_DIR}/${DL_NAME}"
      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
      )
+message("...done")
 
-set(MOSEK_PLATFORM_PATH "${CMAKE_CURRENT_BINARY_DIR}/mosek/7/tools/platform/${PLATFORM_NAME}")
+# Install support for various languages:
 
+############## C / C++ ###############
 pods_install_headers(${MOSEK_PLATFORM_PATH}/h/mosek.h DESTINATION mosek)
-
 add_library(mosek64 SHARED IMPORTED)
 set_target_properties(mosek64 PROPERTIES IMPORTED_LOCATION ${MOSEK_PLATFORM_PATH}/bin/ )
+
+############## Python ################
+pods_install_python_packages("${MOSEK_PLATFORM_PATH}/python/2/")
