@@ -1,0 +1,39 @@
+cmake_minimum_required(VERSION 2.6.0)
+
+# pull in the pods macros. See cmake/pods.cmake for documentation
+set(POD_NAME mosek)
+include(cmake/pods.cmake)
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	set(PLATFORM_NAME "osx64x86" )
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+	execute_process(COMMAND uname -m 
+		            OUTPUT_VARIABLE UNAME_M)
+	if (${UNAME_M} MATCHES "x86_64")
+		set(PLATFORM_NAME "linux64x86" )
+	elseif (${UNAME_M} MATCHES "x86")
+		set(PLATFORM_NAME "linux32x86" )
+	else()
+		message(FATAL_ERROR "Unrecognized system variant: ${CMAKE_SYSTEM_NAME} ${UNAME_M}")
+	endif()
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+	message(FATAL_ERROR "Sorry, I haven't yet been able to support Windows. Please open an issue on the github site if this is important for you.")
+else()
+	message(FATAL_ERROR "Unrecognized operating system name: ${CMAKE_SYSTEM_NAME}")
+endif()
+
+set(DL_PATH "http://download.mosek.com/stable/7")
+set(DL_NAME "mosektools${PLATFORM_NAME}.tar.bz2")
+
+file(DOWNLOAD "${DL_PATH}/${DL_NAME}" "${CMAKE_CURRENT_BINARY_DIR}/${DL_NAME}")
+execute_process(
+     COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_CURRENT_BINARY_DIR}/${DL_NAME}"
+     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+     )
+
+set(MOSEK_PLATFORM_PATH "${CMAKE_CURRENT_BINARY_DIR}/mosek/7/tools/platform/${PLATFORM_NAME}")
+
+pods_install_headers(${MOSEK_PLATFORM_PATH}/h/mosek.h DESTINATION mosek)
+
+add_library(mosek64 SHARED IMPORTED)
+set_target_properties(mosek64 PROPERTIES IMPORTED_LOCATION ${MOSEK_PLATFORM_PATH}/bin/ )

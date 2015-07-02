@@ -1,3 +1,4 @@
+# Default pod makefile distributed with pods version: 12.11.14
 
 default_target: all
 
@@ -22,91 +23,27 @@ ifeq "$(BUILD_TYPE)" ""
 BUILD_TYPE="Release"
 endif
 
-DL_PATH   = http://download.mosek.com/stable/7
-UNZIP_DIR = 7
-ifeq ($(shell uname -s), Darwin)
-  PLATFORM_NAME = osx64x86
-else ifeq ($(shell uname -s), Linux)
-  ifeq ($(shell uname -m), x86_64)
-    PLATFORM_NAME = linux64x86
-  else
-    PLATFORM_NAME = linux32x86
-  endif
-else
-  # throw an error?
-endif
+all: pod-build/Makefile
+	$(MAKE) -C pod-build all install
 
-DL_NAME = mosektools$(PLATFORM_NAME).tar.bz2
+pod-build/Makefile:
+	$(MAKE) configure
 
-all: $(UNZIP_DIR) $(BUILD_PREFIX)/matlab/addpath_mosek.m $(BUILD_PREFIX)/matlab/rmpath_mosek.m $(HOME)/mosek/mosek.lic $(BUILD_PREFIX)/lib/python2.7/site-packages/mosek/__init__.py install_c
+.PHONY: configure
+configure:
+	@echo "\nBUILD_PREFIX: $(BUILD_PREFIX)\n\n"
 
-install_c: $(BUILD_PREFIX)/include/mosek.h $(BUILD_PREFIX)/lib/libmosek64.so.7.1
+	# create the temporary build directory if needed
+	@mkdir -p pod-build
 
-$(BUILD_PREFIX)/include/mosek.h: $(UNZIP_DIR)
-	mkdir -p $(BUILD_PREFIX)/include
-	cp $(UNZIP_DIR)/tools/platform/$(PLATFORM_NAME)/h/mosek.h $(BUILD_PREFIX)/include/mosek.h
-
-$(BUILD_PREFIX)/lib/libmosek64.so.7.1: $(UNZIP_DIR)
-	mkdir -p $(BUILD_PREFIX)/lib
-	cp $(UNZIP_DIR)/tools/platform/linux64x86/bin/libmosek64.so.7.1 $(BUILD_PREFIX)/lib/
-	ln -s $(BUILD_PREFIX)/lib/libmosek64.so.7.1 $(BUILD_PREFIX)/lib/libmosek64.so
-
-$(UNZIP_DIR):
-	wget --no-check-certificate $(DL_PATH)/$(DL_NAME) && tar -xjf $(DL_NAME) -C .. && rm $(DL_NAME)
-
-# note that there are only two folders (r2012a, r2013a) on mac, but there are more on linux.  i've only supported the two below
-$(BUILD_PREFIX)/matlab/addpath_mosek.m : Makefile
-	@mkdir -p $(BUILD_PREFIX)/matlab
-	echo "Writing $(BUILD_PREFIX)/matlab/addpath_mosek.m"
-	echo "function addpath_mosek()\n\n \
-		if verLessThan('matlab','8.1')\n \
-		  if verLessThan('matlab','7.14'),\n \
-		    error('Mosek requires MATLAB 7.14 (R2012a) or higher');\n \
-		  else\n \
-		    d='r2012a';\n \
-		  end\n \
-		else\n \
-	          d='r2013a';\n \
-	        end\n \
-	    javaaddpathProtectGlobals(fullfile('$(shell pwd)','7','tools','platform','$(PLATFORM_NAME)','bin','mosekmatlab.jar'));\n \
-		addpath(fullfile('$(shell pwd)','7','toolbox',d));\n \
-		end\n \
-		\n" \
-		> $(BUILD_PREFIX)/matlab/addpath_mosek.m
-	cat javaaddpathProtectGlobals.m >> $(BUILD_PREFIX)/matlab/addpath_mosek.m
-
-$(BUILD_PREFIX)/matlab/rmpath_mosek.m : Makefile
-	@mkdir -p $(BUILD_PREFIX)/matlab
-	echo "Writing $(BUILD_PREFIX)/matlab/rmpath_mosek.m"
-	echo "function rmpath_mosek()\n\n \
-		if verLessThan('matlab','8.1')\n \
-		  if verLessThan('matlab','7.14'),\n \
-		    error('Mosek requires MATLAB 7.14 (R2012a) or higher');\n \
-		  else\n \
-		    d='r2012a';\n \
-		  end\n \
-		else\n \
-	          d='r2013a';\n \
-	        end\n \
-	    javarmpath(fullfile('$(shell pwd)','7','tools','platform','$(PLATFORM_NAME)','bin','mosekmatlab.jar'));\n \
-		rmpath(fullfile('$(shell pwd)','7','toolbox',d));\n" \
-		> $(BUILD_PREFIX)/matlab/rmpath_mosek.m
-
-$(BUILD_PREFIX)/lib/python2.7/site-packages/mosek/__init__.py: Makefile $(UNZIP_DIR)
-	python $(UNZIP_DIR)/tools/platform/$(PLATFORM_NAME)/python/2/setup.py install --prefix=$(BUILD_PREFIX) --record $(shell pwd)/python_install_manifest.txt
-	pwd
-
-# todo: make this logic more robust:
-#   check for license path environment variable
-#   check expiration date in mosek.lic if it is found
-$(HOME)/mosek/mosek.lic :
-	@echo >&2 "You do not appear to have a license for mosek installed in $(HOME)/mosek/mosek.lic\n"
-	@echo >&2 "Open the following url in your favorite browser and request the license:\n"
-	@echo >&2 "           http://license.mosek.com/academic/\n"
-	@echo >&2 "Then check your email for the license file and put it in $(HOME)/mosek/mosek.lic\n"
-	exit 1
+	# run CMake to generate and configure the build scripts
+	@cd pod-build && cmake -DCMAKE_INSTALL_PREFIX=$(BUILD_PREFIX) \
+		   -DCMAKE_BUILD_TYPE=$(BUILD_TYPE) ..
 
 clean:
-	-rm $(BUILD_PREFIX)/matlab/*path_mosek.m
-	-rm $(BUILD_PREFIX)/lib/libmosek* $(BUILD_PREFIX)/include/mosek.h
-	cat python_install_manifest.txt | xargs rm -rf
+	-if [ -e pod-build/install_manifest.txt ]; then rm -f `cat pod-build/install_manifest.txt`; fi
+	-if [ -d pod-build ]; then $(MAKE) -C pod-build clean; rm -rf pod-build; fi
+
+# other (custom) targets are passed through to the cmake-generated Makefile 
+%::
+	$(MAKE) -C pod-build $@
