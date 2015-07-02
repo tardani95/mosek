@@ -38,7 +38,18 @@ endif
 
 DL_NAME = mosektools$(PLATFORM_NAME).tar.bz2
 
-all: $(UNZIP_DIR) $(BUILD_PREFIX)/matlab/addpath_mosek.m $(BUILD_PREFIX)/matlab/rmpath_mosek.m $(HOME)/mosek/mosek.lic $(BUILD_PREFIX)/lib/python2.7/site-packages/mosek/__init__.py
+all: $(UNZIP_DIR) $(BUILD_PREFIX)/matlab/addpath_mosek.m $(BUILD_PREFIX)/matlab/rmpath_mosek.m $(HOME)/mosek/mosek.lic $(BUILD_PREFIX)/lib/python2.7/site-packages/mosek/__init__.py install_c
+
+install_c: $(BUILD_PREFIX)/include/mosek.h $(BUILD_PREFIX)/lib/libmosek64.so.7.1
+
+$(BUILD_PREFIX)/include/mosek.h: $(UNZIP_DIR)
+	mkdir -p $(BUILD_PREFIX)/include
+	cp $(UNZIP_DIR)/tools/platform/$(PLATFORM_NAME)/h/mosek.h $(BUILD_PREFIX)/include/mosek.h
+
+$(BUILD_PREFIX)/lib/libmosek64.so.7.1: $(UNZIP_DIR)
+	mkdir -p $(BUILD_PREFIX)/lib
+	cp $(UNZIP_DIR)/tools/platform/linux64x86/bin/libmosek64.so.7.1 $(BUILD_PREFIX)/lib/
+	ln -s $(BUILD_PREFIX)/lib/libmosek64.so.7.1 $(BUILD_PREFIX)/lib/libmosek64.so
 
 $(UNZIP_DIR):
 	wget --no-check-certificate $(DL_PATH)/$(DL_NAME) && tar -xjf $(DL_NAME) -C .. && rm $(DL_NAME)
@@ -97,4 +108,5 @@ $(HOME)/mosek/mosek.lic :
 
 clean:
 	-rm $(BUILD_PREFIX)/matlab/*path_mosek.m
+	-rm $(BUILD_PREFIX)/lib/libmosek* $(BUILD_PREFIX)/include/mosek.h
 	cat python_install_manifest.txt | xargs rm -rf
