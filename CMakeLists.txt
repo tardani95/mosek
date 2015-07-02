@@ -30,7 +30,7 @@ set(MOSEK_PLATFORM_PATH "${CMAKE_CURRENT_BINARY_DIR}/mosek/7/tools/platform/${PL
 
 # Download and unzip the source
 message("Downloading and extracting Mosek files from ${DL_PATH}/${DL_NAME} ...")
-# file(DOWNLOAD "${DL_PATH}/${DL_NAME}" "${CMAKE_CURRENT_BINARY_DIR}/${DL_NAME}")
+file(DOWNLOAD "${DL_PATH}/${DL_NAME}" "${CMAKE_CURRENT_BINARY_DIR}/${DL_NAME}")
 execute_process(
      COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_CURRENT_BINARY_DIR}/${DL_NAME}"
      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
