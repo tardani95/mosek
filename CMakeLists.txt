@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 2.6.0)
 
 # pull in the pods macros. See cmake/pods.cmake for documentation
-set(POD_NAME mosek)
+set(POD_NAME mosek-pod)
 include(cmake/pods.cmake)
+include(cmake/matlab_pods.cmake)
 
 # Set up the system name and various paths
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -29,7 +30,7 @@ set(MOSEK_PLATFORM_PATH "${CMAKE_CURRENT_BINARY_DIR}/mosek/7/tools/platform/${PL
 
 # Download and unzip the source
 message("Downloading and extracting Mosek files from ${DL_PATH}/${DL_NAME} ...")
-file(DOWNLOAD "${DL_PATH}/${DL_NAME}" "${CMAKE_CURRENT_BINARY_DIR}/${DL_NAME}")
+# file(DOWNLOAD "${DL_PATH}/${DL_NAME}" "${CMAKE_CURRENT_BINARY_DIR}/${DL_NAME}")
 execute_process(
      COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_CURRENT_BINARY_DIR}/${DL_NAME}"
      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
@@ -45,3 +46,8 @@ set_target_properties(mosek64 PROPERTIES IMPORTED_LOCATION ${MOSEK_PLATFORM_PATH
 
 ############## Python ################
 pods_install_python_packages("${MOSEK_PLATFORM_PATH}/python/2/")
+
+############## Matlab ################
+pods_configure_matlab_paths()
+file(RELATIVE_PATH MOSEK_MATLAB_REL_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}/mosek/7/toolbox/r2013a/)
+pods_install_matlab_path(mosek ${MOSEK_MATLAB_REL_PATH})
