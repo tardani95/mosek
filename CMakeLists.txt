@@ -29,13 +29,15 @@ set(DL_NAME "mosektools${PLATFORM_NAME}.tar.bz2")
 set(MOSEK_PLATFORM_PATH "${CMAKE_CURRENT_BINARY_DIR}/mosek/7/tools/platform/${PLATFORM_NAME}")
 
 # Download and unzip the source
-message("Downloading and extracting Mosek files from ${DL_PATH}/${DL_NAME} ...")
-file(DOWNLOAD "${DL_PATH}/${DL_NAME}" "${CMAKE_CURRENT_BINARY_DIR}/${DL_NAME}")
-execute_process(
-     COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_CURRENT_BINARY_DIR}/${DL_NAME}"
-     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-     )
-message("...done")
+if (NOT EXISTS ${MOSEK_PLATFORM_PATH}/h/mosek.h)
+	message("Downloading and extracting Mosek files from ${DL_PATH}/${DL_NAME} ...")
+	file(DOWNLOAD "${DL_PATH}/${DL_NAME}" "${CMAKE_CURRENT_BINARY_DIR}/${DL_NAME}" SHOW_PROGRESS)
+	execute_process(
+	     COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_CURRENT_BINARY_DIR}/${DL_NAME}"
+	     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+	     )
+	message("...done")
+endif()
 
 # Install support for various languages:
 
