@@ -1,4 +1,6 @@
-cmake_minimum_required(VERSION 2.6.0)
+cmake_minimum_required(VERSION 2.8.0)
+
+project(Mosek)
 
 # pull in the pods macros. See cmake/pods.cmake for documentation
 set(POD_NAME mosek-pod)
@@ -9,7 +11,7 @@ include(cmake/matlab_pods.cmake)
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	set(PLATFORM_NAME "osx64x86" )
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-	execute_process(COMMAND uname -m 
+	execute_process(COMMAND uname -m
 		            OUTPUT_VARIABLE UNAME_M)
 	if (${UNAME_M} MATCHES "x86_64")
 		set(PLATFORM_NAME "linux64x86" )
@@ -44,7 +46,12 @@ endif()
 ############## C / C++ ###############
 pods_install_headers(${MOSEK_PLATFORM_PATH}/h/mosek.h DESTINATION mosek)
 add_library(mosek64 SHARED IMPORTED)
-set_target_properties(mosek64 PROPERTIES IMPORTED_LOCATION ${MOSEK_PLATFORM_PATH}/bin/ )
+set_target_properties(mosek64 PROPERTIES IMPORTED_LOCATION ${MOSEK_PLATFORM_PATH}/bin/)
+
+install(DIRECTORY ${MOSEK_PLATFORM_PATH}/bin/ DESTINATION lib
+        FILES_MATCHING PATTERN "*mosek64*")
+install(DIRECTORY ${MOSEK_PLATFORM_PATH}/bin/ DESTINATION lib
+        FILES_MATCHING PATTERN "*iomp5*")
 
 ############## Python ################
 pods_install_python_packages("${MOSEK_PLATFORM_PATH}/python/2/")
