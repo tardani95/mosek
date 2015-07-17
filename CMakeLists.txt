@@ -43,20 +43,18 @@ endif()
 
 # Install support for various languages:
 
-############## C / C++ ###############
+############# C / C++ ###############
 pods_install_headers(${MOSEK_PLATFORM_PATH}/h/mosek.h DESTINATION mosek)
-add_library(mosek64 SHARED IMPORTED)
-set_target_properties(mosek64 PROPERTIES IMPORTED_LOCATION ${MOSEK_PLATFORM_PATH}/bin/)
-
 install(DIRECTORY ${MOSEK_PLATFORM_PATH}/bin/ DESTINATION lib
         FILES_MATCHING PATTERN "*mosek64*")
 install(DIRECTORY ${MOSEK_PLATFORM_PATH}/bin/ DESTINATION lib
         FILES_MATCHING PATTERN "*iomp5*")
 
-############## Python ################
+############# Python ################
 pods_install_python_packages("${MOSEK_PLATFORM_PATH}/python/2/")
 
-############## Matlab ################
+############# Matlab ################
 pods_configure_matlab_paths()
 file(RELATIVE_PATH MOSEK_MATLAB_REL_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}/mosek/7/toolbox/r2013a/)
 pods_install_matlab_path(mosek ${MOSEK_MATLAB_REL_PATH})
+
