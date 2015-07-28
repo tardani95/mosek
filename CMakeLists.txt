@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.0)
 
-project(Mosek)
+project(mosek)
 
 # pull in the pods macros. See cmake/pods.cmake for documentation
 set(POD_NAME mosek-pod)
@@ -58,3 +58,7 @@ pods_configure_matlab_paths()
 file(RELATIVE_PATH MOSEK_MATLAB_REL_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}/mosek/7/toolbox/r2013a/)
 pods_install_matlab_path(mosek ${MOSEK_MATLAB_REL_PATH})
 
+pods_install_pkg_config_file(mosek
+  LIBS -lmosek64
+  REQUIRES
+  VERSION 7.0.0)
