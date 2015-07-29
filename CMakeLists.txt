@@ -60,5 +60,6 @@ pods_install_matlab_path(mosek ${MOSEK_MATLAB_REL_PATH})
 
 pods_install_pkg_config_file(mosek
   LIBS -lmosek64
+  CFLAGS -I${CMAKE_INSTALL_PREFIX}/include
   REQUIRES
   VERSION 7.0.0)
