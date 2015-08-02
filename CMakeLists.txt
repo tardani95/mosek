@@ -72,7 +72,7 @@ file(WRITE ${mosek_addpathfile}
 	"else\n"
 	"  d='r2013a';\n"
 	"end\n"
-	"javaaddpath(fullfile('${CMAKE_CURRENT_BINARY_DIR}','mosek','7','tools','platform','${PLATFORM_NAME}','bin','mosekmatlab.jar'));\n"
+	"javaaddpathProtectGlobals(fullfile('${CMAKE_CURRENT_BINARY_DIR}','mosek','7','tools','platform','${PLATFORM_NAME}','bin','mosekmatlab.jar'));\n"
 	"addpath(fullfile('${CMAKE_CURRENT_BINARY_DIR}', 'mosek','7','toolbox',d));\n"
 )
 set(mosek_rmpathfile ${CMAKE_CURRENT_BINARY_DIR}/matlab/rmpath_mosek.m)
@@ -90,7 +90,7 @@ file(WRITE ${mosek_rmpathfile}
     "javarmpath(fullfile('${CMAKE_CURRENT_BINARY_DIR}','mosek','7','tools','platform','${PLATFORM_NAME}','bin','mosekmatlab.jar'));\n"
     "rmpath(fullfile('${CMAKE_CURRENT_BINARY_DIR}', 'mosek','7','toolbox',d));\n"
 )
-install(FILES ${mosek_addpathfile} ${mosek_rmpathfile} DESTINATION matlab/)
+install(FILES ${mosek_addpathfile} ${mosek_rmpathfile} ${CMAKE_CURRENT_SOURCE_DIR}/javaaddpathProtectGlobals.m DESTINATION matlab/)
 
 pods_install_pkg_config_file(mosek
   LIBS -lmosek64 -L${CMAKE_INSTALL_PREFIX}/lib
