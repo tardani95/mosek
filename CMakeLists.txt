@@ -32,7 +32,7 @@ set(MOSEK_PLATFORM_PATH "${CMAKE_CURRENT_BINARY_DIR}/mosek/7/tools/platform/${PL
 
 # Check for the mosek license file
 if (NOT EXISTS $ENV{HOME}/mosek/mosek.lic)
-    message(FATAL_ERROR "You do not appear to have a license for mosek installed in $ENV{HOME}/mosek/mosek.lic\n If you are an academic user, you can open the following url in your favorite browser and request the license:\n     http://license.mosek.com/license2/academic/\n Then check your email for the license file and put it in $ENV{HOME}/mosek/mosek.lic\n Otherwise visit https://mosek.com/resources/trial-license to request a trial license.")
+    message(WARNING "You do not appear to have a license for mosek installed in $ENV{HOME}/mosek/mosek.lic\n If you are an academic user, you can open the following url in your favorite browser and request the license:\n     http://license.mosek.com/license2/academic/\n Then check your email for the license file and put it in $ENV{HOME}/mosek/mosek.lic\n Otherwise visit https://mosek.com/resources/trial-license to request a trial license.")
 endif()
 
 # Download and unzip the source
