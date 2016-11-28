@@ -22,6 +22,7 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 include(CMakePackageConfigHelpers)
+include(CTest)
 include(GNUInstallDirs)
 
 if(NOT MOSEK_PLATFORM)
@@ -517,3 +518,4 @@ install(FILES
   DESTINATION ${MOSEK_DIR}
 )
 
+add_subdirectory(test)
