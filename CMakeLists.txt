@@ -289,7 +289,7 @@ install(FILES "${MOSEK_PLATFORM_DIR}/h/mosek.h"
   DESTINATION ${MOSEK_INCLUDE_DIR}
 )
 
-set(MOSEK_DIR ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME})
+set(MOSEK_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
 configure_package_config_file(
   mosek-c-targets.cmake.in mosek-c-targets-install.cmake
