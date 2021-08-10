@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(mosek VERSION 7.1.0.45 LANGUAGES C)
+project(mosek VERSION 9.3.1 LANGUAGES C)
 
 if(CMAKE_VERSION VERSION_LESS 3.7)
   list(INSERT CMAKE_MODULE_PATH 0
