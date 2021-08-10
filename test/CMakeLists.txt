@@ -10,7 +10,7 @@ if(BUILD_TESTING)
   )
 
   set(MOSEK_EXAMPLES_DIR
-    "${MOSEK_ARCHIVE_DIR}/${PROJECT_VERSION_MAJOR}/tools/examples"
+    "${MOSEK_ARCHIVE_DIR}/${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}/tools/examples"
   )
 
   function(mosek_c_add_test name)
