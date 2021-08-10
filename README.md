@@ -1,4 +1,4 @@
-Wrapper for MOSEK 7.1.0
+Wrapper for MOSEK 9.3.1
 =======================
 
 <https://www.mosek.com>
@@ -6,7 +6,7 @@ Wrapper for MOSEK 7.1.0
 Requires a free academic license or paid commercial license, as appropriate.
 Install the license file to `$HOME/mosek/mosek.lic`.
 
-Versions other than 7.1.0 are unsupported by this wrapper.
+Versions other than 9.3.1 are unsupported by this wrapper.
 
 ```
 $ mkdir build && cd build
