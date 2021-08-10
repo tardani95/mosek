@@ -30,15 +30,15 @@ if(BUILD_TESTING)
     target_compile_options(callback_c PRIVATE -Wno-switch)
   endif()
 
-  mosek_c_add_test(concurrent1 "${MOSEK_EXAMPLES_DIR}/data/25fv47.mps")
-  mosek_c_add_test(concurrent2 "${MOSEK_EXAMPLES_DIR}/data/25fv47.mps")
+#  mosek_c_add_test(concurrent1 "${MOSEK_EXAMPLES_DIR}/data/25fv47.mps")
+#  mosek_c_add_test(concurrent2 "${MOSEK_EXAMPLES_DIR}/data/25fv47.mps")
   mosek_c_add_test(cqo1)
   mosek_c_add_test(feasrepairex1 "${MOSEK_EXAMPLES_DIR}/data/feasrepair.lp")
   mosek_c_add_test(lo1)
   mosek_c_add_test(lo2)
   mosek_c_add_test(milo1)
   mosek_c_add_test(mioinitsol)
-  mosek_c_add_test(production)
+#  mosek_c_add_test(production)
   mosek_c_add_test(qcqo1)
   mosek_c_add_test(qo1)
   mosek_c_add_test(sensitivity)
@@ -47,25 +47,25 @@ if(BUILD_TESTING)
   mosek_c_add_test(solvebasis)
   mosek_c_add_test(solvelinear)
 
-  add_library(scopt_c STATIC
-    "${MOSEK_EXAMPLES_DIR}/c/scopt-ext.c"
-    "${MOSEK_EXAMPLES_DIR}/c/scopt-ext.h"
-  )
-  target_link_libraries(scopt_c PUBLIC mosek)
+#  add_library(scopt_c STATIC
+#    "${MOSEK_EXAMPLES_DIR}/c/scopt-ext.c"
+#    "${MOSEK_EXAMPLES_DIR}/c/scopt-ext.h"
+#  )
+#  target_link_libraries(scopt_c PUBLIC mosek)
 
-  add_library(expopt_c STATIC
-    "${MOSEK_EXAMPLES_DIR}/c/dgopt.c"
-    "${MOSEK_EXAMPLES_DIR}/c/dgopt.h"
-    "${MOSEK_EXAMPLES_DIR}/c/expopt.c"
-    "${MOSEK_EXAMPLES_DIR}/c/expopt.h"
-  )
-  target_link_libraries(expopt_c PUBLIC mosek scopt_c)
+#  add_library(expopt_c STATIC
+#    "${MOSEK_EXAMPLES_DIR}/c/dgopt.c"
+#    "${MOSEK_EXAMPLES_DIR}/c/dgopt.h"
+#    "${MOSEK_EXAMPLES_DIR}/c/expopt.c"
+#    "${MOSEK_EXAMPLES_DIR}/c/expopt.h"
+#  )
+#  target_link_libraries(expopt_c PUBLIC mosek scopt_c)
+#
+#  mosek_c_add_test(tstexpopt)
+#  target_link_libraries(tstexpopt_c PRIVATE expopt_c)
 
-  mosek_c_add_test(tstexpopt)
-  target_link_libraries(tstexpopt_c PRIVATE expopt_c)
-
-  mosek_c_add_test(tstscopt)
-  target_link_libraries(tstscopt_c PRIVATE scopt_c)
+#  mosek_c_add_test(tstscopt)
+#  target_link_libraries(tstscopt_c PRIVATE scopt_c)
 
   if(Java_FOUND)
     set(MOSEK_CLASSPATH
