@@ -34,13 +34,13 @@ if(NOT MOSEK_PLATFORM)
     endif()
   elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-      set(MOSEK_PLATFORM linux32x86)
+      message(FATAL_ERROR "MOSEK is NOT available for this platform")
     else()
       set(MOSEK_PLATFORM linux64x86)
     endif()
   elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-      set(MOSEK_PLATFORM win32x86)
+      message(FATAL_ERROR "MOSEK is NOT available for this platform")
     else()
       set(MOSEK_PLATFORM win64x86)
     endif()
@@ -50,14 +50,12 @@ if(NOT MOSEK_PLATFORM)
 endif()
 
 set(MOSEK_PLATFORM "${MOSEK_PLATFORM}" CACHE STRING
-  "Choose the MOSEK platform; options are linux32x86 linux64x86 osx64x86 win32x86 win64x86"
+  "Choose the MOSEK platform; options are linux64x86 osx64x86 win64x86"
 )
 set_property(CACHE MOSEK_PLATFORM PROPERTY
   STRINGS
-    linux32x86
     linux64x86
     osx64x86
-    win32x86
     win64x86
 )
 
