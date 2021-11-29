@@ -1,4 +1,4 @@
-Wrapper for MOSEK 9.3.1
+Wrapper for MOSEK 9.3.10
 =======================
 
 <https://www.mosek.com>
@@ -6,7 +6,7 @@ Wrapper for MOSEK 9.3.1
 Requires a free academic license or paid commercial license, as appropriate.
 Install the license file to `$HOME/mosek/mosek.lic`.
 
-Versions other than 9.3.1 are unsupported by this wrapper.
+Versions other than *v9.3.10 for linux* are unsupported by this wrapper.
 
 Add optional `CMAKE_INSTALL_PREFIX <install_dir>` CMake option.
 
