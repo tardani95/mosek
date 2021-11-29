@@ -1,172 +1,172 @@
 cmake_minimum_required(VERSION 3.5)
 project(mosek VERSION 9.3.10 LANGUAGES C)
 
-if(CMAKE_VERSION VERSION_LESS 3.7)
-  list(INSERT CMAKE_MODULE_PATH 0
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/3.7"
-  )
-endif()
+if (CMAKE_VERSION VERSION_LESS 3.7)
+    list(INSERT CMAKE_MODULE_PATH 0
+            "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/3.7"
+            )
+endif ()
 
-if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-  set(CMAKE_BUILD_TYPE Release CACHE STRING
-    "Choose the type of build; options are Debug Release RelWithDebInfo MinSizeRel"
-    FORCE
-  )
-  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY
-    STRINGS
-      Debug
-      Release
-      RelWithDebInfo
-      MinSizeRel
-  )
-endif()
+if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING
+            "Choose the type of build; options are Debug Release RelWithDebInfo MinSizeRel"
+            FORCE
+            )
+    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY
+            STRINGS
+            Debug
+            Release
+            RelWithDebInfo
+            MinSizeRel
+            )
+endif ()
 
 include(CMakePackageConfigHelpers)
 include(CTest)
 include(GNUInstallDirs)
 
-if(NOT MOSEK_PLATFORM)
-  if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-      message(FATAL_ERROR "MOSEK is NOT available for the osx32x86 platform")
-    else()
-      set(MOSEK_PLATFORM osx64x86)
-    endif()
-  elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-      message(FATAL_ERROR "MOSEK is NOT available for this platform")
-    else()
-      set(MOSEK_PLATFORM linux64x86)
-    endif()
-  elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-      message(FATAL_ERROR "MOSEK is NOT available for this platform")
-    else()
-      set(MOSEK_PLATFORM win64x86)
-    endif()
-  else()
-    message(FATAL_ERROR "MOSEK is NOT available for this platform")
-  endif()
-endif()
+if (NOT MOSEK_PLATFORM)
+    if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+        if (CMAKE_SIZEOF_VOID_P EQUAL 4)
+            message(FATAL_ERROR "MOSEK is NOT available for the osx32x86 platform")
+        else ()
+            set(MOSEK_PLATFORM osx64x86)
+        endif ()
+    elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+        if (CMAKE_SIZEOF_VOID_P EQUAL 4)
+            message(FATAL_ERROR "MOSEK is NOT available for this platform")
+        else ()
+            set(MOSEK_PLATFORM linux64x86)
+        endif ()
+    elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+        if (CMAKE_SIZEOF_VOID_P EQUAL 4)
+            message(FATAL_ERROR "MOSEK is NOT available for this platform")
+        else ()
+            set(MOSEK_PLATFORM win64x86)
+        endif ()
+    else ()
+        message(FATAL_ERROR "MOSEK is NOT available for this platform")
+    endif ()
+endif ()
 
 set(MOSEK_PLATFORM "${MOSEK_PLATFORM}" CACHE STRING
-  "Choose the MOSEK platform; options are linux64x86 osx64x86 win64x86"
-)
+        "Choose the MOSEK platform; options are linux64x86 osx64x86 win64x86"
+        )
 set_property(CACHE MOSEK_PLATFORM PROPERTY
-  STRINGS
-    linux64x86
-    osx64x86
-    win64x86
-)
+        STRINGS
+        linux64x86
+        osx64x86
+        win64x86
+        )
 
 message(STATUS "MOSEK platform is ${MOSEK_PLATFORM}")
 
-if(MOSEK_PLATFORM STREQUAL "osx64x86")
-  set(MOSEK_ARCHIVE_SUFFIX .tar.bz2)
-  set(MOSEK_ARCHIVE_EXPECTED_SHA256
-    2ba45bc226f7674e37b2ffb392beb9c9d888dc17745c8222d783999eff9a58b6
-  )
-elseif(MOSEK_PLATFORM MATCHES "^linux")
-  set(MOSEK_ARCHIVE_SUFFIX .tar.bz2)
-
-  if(MOSEK_PLATFORM STREQUAL "linux64x86")
+if (MOSEK_PLATFORM STREQUAL "osx64x86")
+    set(MOSEK_ARCHIVE_SUFFIX .tar.bz2)
     set(MOSEK_ARCHIVE_EXPECTED_SHA256
-#      5611d217eb8ae085b129ca13366d71f5e0ac940e05b4fe50f7099b777b47075b - 9.3.1
-       42ce6a9bda88b00eef6c8d72ad35333340cf398bb3f14ab5c8158d39783a8e32
-    )
-  endif()
-elseif(MOSEK_PLATFORM MATCHES "^win")
-  set(MOSEK_ARCHIVE_SUFFIX .zip)
+            2ba45bc226f7674e37b2ffb392beb9c9d888dc17745c8222d783999eff9a58b6
+            )
+elseif (MOSEK_PLATFORM MATCHES "^linux")
+    set(MOSEK_ARCHIVE_SUFFIX .tar.bz2)
 
-  if(MOSEK_PLATFORM STREQUAL "win64x86")
-    set(MOSEK_ARCHIVE_EXPECTED_SHA256
-      320b1d7b15b03f091b0c1d17950707eddd87da7a18f46f096baa1c3fea4c7c5f
-    )
-  endif()
-else()
-  message(FATAL_ERROR "MOSEK is NOT available for this platform")
-endif()
+    if (MOSEK_PLATFORM STREQUAL "linux64x86")
+        set(MOSEK_ARCHIVE_EXPECTED_SHA256
+                #      5611d217eb8ae085b129ca13366d71f5e0ac940e05b4fe50f7099b777b47075b - 9.3.1
+                42ce6a9bda88b00eef6c8d72ad35333340cf398bb3f14ab5c8158d39783a8e32
+                )
+    endif ()
+elseif (MOSEK_PLATFORM MATCHES "^win")
+    set(MOSEK_ARCHIVE_SUFFIX .zip)
+
+    if (MOSEK_PLATFORM STREQUAL "win64x86")
+        set(MOSEK_ARCHIVE_EXPECTED_SHA256
+                320b1d7b15b03f091b0c1d17950707eddd87da7a18f46f096baa1c3fea4c7c5f
+                )
+    endif ()
+else ()
+    message(FATAL_ERROR "MOSEK is NOT available for this platform")
+endif ()
 
 set(MOSEK_ARCHIVE
-  "${CMAKE_CURRENT_BINARY_DIR}/mosektools${MOSEK_PLATFORM}${MOSEK_ARCHIVE_SUFFIX}"
-)
+        "${CMAKE_CURRENT_BINARY_DIR}/mosektools${MOSEK_PLATFORM}${MOSEK_ARCHIVE_SUFFIX}"
+        )
 
-if(EXISTS "${MOSEK_ARCHIVE}")
-  file(SHA256 "${MOSEK_ARCHIVE}" MOSEK_ARCHIVE_ACTUAL_SHA256)
+if (EXISTS "${MOSEK_ARCHIVE}")
+    file(SHA256 "${MOSEK_ARCHIVE}" MOSEK_ARCHIVE_ACTUAL_SHA256)
 
-  if(NOT MOSEK_ARCHIVE_ACTUAL_SHA256 STREQUAL MOSEK_ARCHIVE_EXPECTED_SHA256)
-    file(REMOVE "${MOSEK_ARCHIVE}")
-  endif()
-endif()
+    if (NOT MOSEK_ARCHIVE_ACTUAL_SHA256 STREQUAL MOSEK_ARCHIVE_EXPECTED_SHA256)
+        file(REMOVE "${MOSEK_ARCHIVE}")
+    endif ()
+endif ()
 
-if(NOT EXISTS "${MOSEK_ARCHIVE}")
-  set(MOSEK_ARCHIVE_URL
-    "http://download.mosek.com/stable/${PROJECT_VERSION}/mosektools${MOSEK_PLATFORM}${MOSEK_ARCHIVE_SUFFIX}"
-  )
+if (NOT EXISTS "${MOSEK_ARCHIVE}")
+    set(MOSEK_ARCHIVE_URL
+            "http://download.mosek.com/stable/${PROJECT_VERSION}/mosektools${MOSEK_PLATFORM}${MOSEK_ARCHIVE_SUFFIX}"
+            )
 
-  message(STATUS "Downloading the MOSEK archive from ${MOSEK_ARCHIVE_URL}")
+    message(STATUS "Downloading the MOSEK archive from ${MOSEK_ARCHIVE_URL}")
 
-  file(DOWNLOAD "${MOSEK_ARCHIVE_URL}" "${MOSEK_ARCHIVE}"
-    SHOW_PROGRESS
-    STATUS MOSEK_DOWNLOAD_STATUS
-    TIMEOUT 300
-  )
+    file(DOWNLOAD "${MOSEK_ARCHIVE_URL}" "${MOSEK_ARCHIVE}"
+            SHOW_PROGRESS
+            STATUS MOSEK_DOWNLOAD_STATUS
+            TIMEOUT 300
+            )
 
-  list(GET MOSEK_DOWNLOAD_STATUS 0 MOSEK_DOWNLOAD_RESULT)
+    list(GET MOSEK_DOWNLOAD_STATUS 0 MOSEK_DOWNLOAD_RESULT)
 
-  if(NOT MOSEK_DOWNLOAD_RESULT EQUAL 0)
-    message(FATAL_ERROR "Could NOT extract MOSEK from archive")
-  endif()
+    if (NOT MOSEK_DOWNLOAD_RESULT EQUAL 0)
+        message(FATAL_ERROR "Could NOT extract MOSEK from archive")
+    endif ()
 
-  file(SHA256 "${MOSEK_ARCHIVE}" MOSEK_ARCHIVE_ACTUAL_SHA256)
+    file(SHA256 "${MOSEK_ARCHIVE}" MOSEK_ARCHIVE_ACTUAL_SHA256)
 
-  if(NOT MOSEK_ARCHIVE_ACTUAL_SHA256 STREQUAL MOSEK_ARCHIVE_EXPECTED_SHA256)
-    message(FATAL_ERROR "The MOSEK archive SHA256 hash does NOT match")
-  endif()
-endif()
+    if (NOT MOSEK_ARCHIVE_ACTUAL_SHA256 STREQUAL MOSEK_ARCHIVE_EXPECTED_SHA256)
+        message(FATAL_ERROR "The MOSEK archive SHA256 hash does NOT match")
+    endif ()
+endif ()
 
 set(MOSEK_ARCHIVE_DIR "${CMAKE_CURRENT_BINARY_DIR}/mosek")
 
-if(EXISTS "${MOSEK_ARCHIVE_DIR}")
-  file(TIMESTAMP "${MOSEK_ARCHIVE}" MOSEK_ARCHIVE_TIMESTAMP %s)
-  file(TIMESTAMP "${MOSEK_ARCHIVE_DIR}" MOSEK_ARCHIVE_DIR_TIMESTAMP %s)
+if (EXISTS "${MOSEK_ARCHIVE_DIR}")
+    file(TIMESTAMP "${MOSEK_ARCHIVE}" MOSEK_ARCHIVE_TIMESTAMP %s)
+    file(TIMESTAMP "${MOSEK_ARCHIVE_DIR}" MOSEK_ARCHIVE_DIR_TIMESTAMP %s)
 
-  if(MOSEK_ARCHIVE_TIMESTAMP GREATER MOSEK_ARCHIVE_DIR_TIMESTAMP)
-    file(REMOVE_RECURSE "${MOSEK_ARCHIVE_DIR}")
-  endif()
-endif()
+    if (MOSEK_ARCHIVE_TIMESTAMP GREATER MOSEK_ARCHIVE_DIR_TIMESTAMP)
+        file(REMOVE_RECURSE "${MOSEK_ARCHIVE_DIR}")
+    endif ()
+endif ()
 
 set(MOSEK_PLATFORM_DIR
-  "${MOSEK_ARCHIVE_DIR}/${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}/tools/platform/${MOSEK_PLATFORM}"
-)
+        "${MOSEK_ARCHIVE_DIR}/${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}/tools/platform/${MOSEK_PLATFORM}"
+        )
 
-if(NOT EXISTS "${MOSEK_ARCHIVE_DIR}")
-  message(STATUS
-    "Extracting MOSEK from the archive mosektools${MOSEK_PLATFORM}${MOSEK_ARCHIVE_SUFFIX}"
-  )
+if (NOT EXISTS "${MOSEK_ARCHIVE_DIR}")
+    message(STATUS
+            "Extracting MOSEK from the archive mosektools${MOSEK_PLATFORM}${MOSEK_ARCHIVE_SUFFIX}"
+            )
 
-  execute_process(COMMAND "${CMAKE_COMMAND}" -E tar xf "${MOSEK_ARCHIVE}"
-    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-    TIMEOUT 300
-    RESULT_VARIABLE MOSEK_EXTRACT_RESULT_VARIABLE
-  )
+    execute_process(COMMAND "${CMAKE_COMMAND}" -E tar xf "${MOSEK_ARCHIVE}"
+            WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+            TIMEOUT 300
+            RESULT_VARIABLE MOSEK_EXTRACT_RESULT_VARIABLE
+            )
 
-  if(NOT MOSEK_EXTRACT_RESULT_VARIABLE EQUAL 0)
-    message(FATAL_ERROR "Could NOT extract MOSEK from the archive")
-  endif()
+    if (NOT MOSEK_EXTRACT_RESULT_VARIABLE EQUAL 0)
+        message(FATAL_ERROR "Could NOT extract MOSEK from the archive")
+    endif ()
 
-  if(NOT EXISTS "${MOSEK_PLATFORM_DIR}")
-    message(FATAL_ERROR
-      "Could NOT extract MOSEK platform directory from the archive"
-    )
-  endif()
-endif()
+    if (NOT EXISTS "${MOSEK_PLATFORM_DIR}")
+        message(FATAL_ERROR
+                "Could NOT extract MOSEK platform directory from the archive"
+                )
+    endif ()
+endif ()
 
-if(NOT EXISTS "$ENV{HOME}/mosek/mosek.lic")
-  message(STATUS
-    "Could NOT find MOSEK license file. Please install your MOSEK license to \$HOME/mosek/mosek.lic."
-  )
-endif()
+if (NOT EXISTS "$ENV{HOME}/mosek/mosek.lic")
+    message(STATUS
+            "Could NOT find MOSEK license file. Please install your MOSEK license to \$HOME/mosek/mosek.lic."
+            )
+endif ()
 
 #if(MOSEK_PLATFORM MATCHES "^win")
 #  set(IOMP5_LIBRARY libiomp5md)
@@ -178,327 +178,333 @@ endif()
 #  "${CMAKE_SHARED_LIBRARY_PREFIX}${IOMP5_LIBRARY}${CMAKE_SHARED_LIBRARY_SUFFIX}"
 #)
 
-if(MOSEK_PLATFORM MATCHES "64x86$")
-  set(MOSEK_LIBRARY mosek64)
-#  set(MOSEKGLB_LIBRARY mosekglb64)
-else()
-  message(STATUS
-          "Do not supported platform!")
-endif()
+if (MOSEK_PLATFORM MATCHES "64x86$")
+    set(MOSEK_LIBRARY mosek64)
+    #  set(MOSEKGLB_LIBRARY mosekglb64)
+else ()
+    message(STATUS
+            "Do not supported platform!")
+endif ()
 
 set(MOSEK_LIBRARY_DIR ${CMAKE_INSTALL_LIBDIR})
 
 function(mosek_change_dylib_id_name name)
-  execute_process(
-    COMMAND
-      "${CMAKE_INSTALL_NAME_TOOL}" -id "${CMAKE_INSTALL_PREFIX}/${MOSEK_LIBRARY_DIR}/${name}" "${MOSEK_PLATFORM_DIR}/bin/${name}"
-      RESULT_VARIABLE MOSEK_INSTALL_NAME_TOOL_RESULT_VARIABLE
-  )
-
-  if(NOT MOSEK_INSTALL_NAME_TOOL_RESULT_VARIABLE EQUAL 0)
-    message(FATAL_ERROR
-      "Could NOT change ${name} dynamic shared library identification name"
+    execute_process(
+            COMMAND
+            "${CMAKE_INSTALL_NAME_TOOL}" -id "${CMAKE_INSTALL_PREFIX}/${MOSEK_LIBRARY_DIR}/${name}" "${MOSEK_PLATFORM_DIR}/bin/${name}"
+            RESULT_VARIABLE MOSEK_INSTALL_NAME_TOOL_RESULT_VARIABLE
     )
-  endif()
+
+    if (NOT MOSEK_INSTALL_NAME_TOOL_RESULT_VARIABLE EQUAL 0)
+        message(FATAL_ERROR
+                "Could NOT change ${name} dynamic shared library identification name"
+                )
+    endif ()
 endfunction()
 
 set(MOSEK_ARCHIVE_FILES)
 set(MOSEK_LIBRARY_FILES)
 set(MOSEK_RUNTIME_FILES)
 
-if(MOSEK_PLATFORM MATCHES "^win")
-#  set(MOSEK_RUNTIME_FILES
-#    "${MOSEK_PLATFORM_DIR}/bin/${IOMP5_LIBRARY_FILE}"
-#  )
+if (MOSEK_PLATFORM MATCHES "^win")
+    #  set(MOSEK_RUNTIME_FILES
+    #    "${MOSEK_PLATFORM_DIR}/bin/${IOMP5_LIBRARY_FILE}"
+    #  )
 
-  if(MOSEK_PLATFORM STREQUAL "win64x86")
-    set(MOSEK_ARCHIVE_FILES
-      "${MOSEK_PLATFORM_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}${MOSEK_LIBRARY}_${PROJECT_VERSION_MAJOR}_${PROJECT_VERSION_MINOR}${CMAKE_STATIC_LIBRARY_SUFFIX}"
-    )
+    if (MOSEK_PLATFORM STREQUAL "win64x86")
+        set(MOSEK_ARCHIVE_FILES
+                "${MOSEK_PLATFORM_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}${MOSEK_LIBRARY}_${PROJECT_VERSION_MAJOR}_${PROJECT_VERSION_MINOR}${CMAKE_STATIC_LIBRARY_SUFFIX}"
+                )
 
-    list(APPEND MOSEK_RUNTIME_FILES
-      "${MOSEK_PLATFORM_DIR}/bin/${CMAKE_SHARED_LIBRARY_PREFIX}${MOSEK_LIBRARY}_${PROJECT_VERSION_MAJOR}_${PROJECT_VERSION_MINOR}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-#      "${MOSEK_PLATFORM_DIR}/bin/${CMAKE_SHARED_LIBRARY_PREFIX}${MOSEKGLB_LIBRARY}_${PROJECT_VERSION_MAJOR}_${PROJECT_VERSION_MINOR}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-    )
-  endif()
-else()
-  set(MOSEK_LIBRARY_FILES
-#    "${MOSEK_PLATFORM_DIR}/bin/${IOMP5_LIBRARY_FILE}"
-    "${MOSEK_PLATFORM_DIR}/bin/${CMAKE_SHARED_LIBRARY_PREFIX}${MOSEK_LIBRARY}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-  )
+        list(APPEND MOSEK_RUNTIME_FILES
+                "${MOSEK_PLATFORM_DIR}/bin/${CMAKE_SHARED_LIBRARY_PREFIX}${MOSEK_LIBRARY}_${PROJECT_VERSION_MAJOR}_${PROJECT_VERSION_MINOR}${CMAKE_SHARED_LIBRARY_SUFFIX}"
+                #      "${MOSEK_PLATFORM_DIR}/bin/${CMAKE_SHARED_LIBRARY_PREFIX}${MOSEKGLB_LIBRARY}_${PROJECT_VERSION_MAJOR}_${PROJECT_VERSION_MINOR}${CMAKE_SHARED_LIBRARY_SUFFIX}"
+                )
+    endif ()
+else ()
+    set(MOSEK_LIBRARY_FILES
+            #    "${MOSEK_PLATFORM_DIR}/bin/${IOMP5_LIBRARY_FILE}"
+            "${MOSEK_PLATFORM_DIR}/bin/${CMAKE_SHARED_LIBRARY_PREFIX}${MOSEK_LIBRARY}${CMAKE_SHARED_LIBRARY_SUFFIX}"
+            )
 
-  if(MOSEK_PLATFORM STREQUAL "osx64x86")
-    set(MOSEK_LIBRARY_FILE
-      "${CMAKE_SHARED_LIBRARY_PREFIX}${MOSEK_LIBRARY}.${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-    )
-#    set(MOSEKGLB_LIBRARY_FILE
-#      "${CMAKE_SHARED_LIBRARY_PREFIX}${MOSEKGLB_LIBRARY}.${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-#    )
+    if (MOSEK_PLATFORM STREQUAL "osx64x86")
+        set(MOSEK_LIBRARY_FILE
+                "${CMAKE_SHARED_LIBRARY_PREFIX}${MOSEK_LIBRARY}.${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}${CMAKE_SHARED_LIBRARY_SUFFIX}"
+                )
+        #    set(MOSEKGLB_LIBRARY_FILE
+        #      "${CMAKE_SHARED_LIBRARY_PREFIX}${MOSEKGLB_LIBRARY}.${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        #    )
 
 
-#    mosek_change_dylib_id_name(${IOMP5_LIBRARY_FILE})
-    mosek_change_dylib_id_name(${MOSEK_LIBRARY_FILE})
-#    mosek_change_dylib_id_name(${MOSEKGLB_LIBRARY_FILE})
+        #    mosek_change_dylib_id_name(${IOMP5_LIBRARY_FILE})
+        mosek_change_dylib_id_name(${MOSEK_LIBRARY_FILE})
+        #    mosek_change_dylib_id_name(${MOSEKGLB_LIBRARY_FILE})
 
-  else()
-    set(MOSEK_LIBRARY_FILE
-      "${CMAKE_SHARED_LIBRARY_PREFIX}${MOSEK_LIBRARY}${CMAKE_SHARED_LIBRARY_SUFFIX}.${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
-    )
-#    set(MOSEKGLB_LIBRARY_FILE
-#      "${CMAKE_SHARED_LIBRARY_PREFIX}${MOSEKGLB_LIBRARY}${CMAKE_SHARED_LIBRARY_SUFFIX}.${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
-#    )
-  endif()
+    else ()
+        set(MOSEK_LIBRARY_FILE
+                "${CMAKE_SHARED_LIBRARY_PREFIX}${MOSEK_LIBRARY}${CMAKE_SHARED_LIBRARY_SUFFIX}.${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+                )
+        set(MOSEK_CILK_LIBRARY_FILE
+                "${CMAKE_SHARED_LIBRARY_PREFIX}cilkrts${CMAKE_SHARED_LIBRARY_SUFFIX}.5"
+                )
+        #    set(MOSEKGLB_LIBRARY_FILE
+        #      "${CMAKE_SHARED_LIBRARY_PREFIX}${MOSEKGLB_LIBRARY}${CMAKE_SHARED_LIBRARY_SUFFIX}.${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+        #    )
+    endif ()
 
-  list(APPEND MOSEK_LIBRARY_FILES
-    "${MOSEK_PLATFORM_DIR}/bin/${MOSEK_LIBRARY_FILE}"
-#    "${MOSEK_PLATFORM_DIR}/bin/${MOSEKGLB_LIBRARY_FILE}"
-  )
-endif()
+    message(STATUS
+            "${MOSEK_PLATFORM_DIR}/bin/${MOSEK_CILK_LIBRARY_FILE}")
 
-if(MOSEK_PLATFORM MATCHES "^win")
-  set(LIBM_LIBRARY)
-else()
-  find_library(LIBM_LIBRARY NAMES m)
+    list(APPEND MOSEK_LIBRARY_FILES
+            "${MOSEK_PLATFORM_DIR}/bin/${MOSEK_LIBRARY_FILE}"
+            "${MOSEK_PLATFORM_DIR}/bin/${MOSEK_CILK_LIBRARY_FILE}"
+            )
+endif ()
 
-  if(NOT LIBM_LIBRARY)
-    message(FATAL_ERROR "LibM NOT found")
-  endif()
-endif()
+if (MOSEK_PLATFORM MATCHES "^win")
+    set(LIBM_LIBRARY)
+else ()
+    find_library(LIBM_LIBRARY NAMES m)
+
+    if (NOT LIBM_LIBRARY)
+        message(FATAL_ERROR "LibM NOT found")
+    endif ()
+endif ()
 
 set(MOSEK_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
 
 install(FILES "${MOSEK_PLATFORM_DIR}/h/mosek.h"
-  DESTINATION ${MOSEK_INCLUDE_DIR}
-)
+        DESTINATION ${MOSEK_INCLUDE_DIR}
+        )
 
 set(MOSEK_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
 configure_package_config_file(
-  mosek-c-targets.cmake.in mosek-c-targets-install.cmake
-  INSTALL_DESTINATION ${MOSEK_DIR}
-  PATH_VARS MOSEK_INCLUDE_DIR MOSEK_LIBRARY_DIR
-  NO_CHECK_REQUIRED_COMPONENTS_MACRO
-  NO_SET_AND_CHECK_MACRO
+        mosek-c-targets.cmake.in mosek-c-targets-install.cmake
+        INSTALL_DESTINATION ${MOSEK_DIR}
+        PATH_VARS MOSEK_INCLUDE_DIR MOSEK_LIBRARY_DIR
+        NO_CHECK_REQUIRED_COMPONENTS_MACRO
+        NO_SET_AND_CHECK_MACRO
 )
 
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/mosek-c-targets-install.cmake"
-  DESTINATION ${MOSEK_DIR}
-  RENAME mosek-c-targets.cmake
-)
+        DESTINATION ${MOSEK_DIR}
+        RENAME mosek-c-targets.cmake
+        )
 
 find_package(PkgConfig MODULE QUIET)
 
-if(PkgConfig_FOUND)
-  find_package(Threads MODULE REQUIRED)
+if (PkgConfig_FOUND)
+    find_package(Threads MODULE REQUIRED)
 
-  configure_file(mosek.pc.in mosek.pc @ONLY)
+    configure_file(mosek.pc.in mosek.pc @ONLY)
 
-  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/mosek.pc"
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
-endif()
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/mosek.pc"
+            DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+endif ()
 
 option(WITH_JAVA "Install the MOSEK Java bindings" OFF)
 option(WITH_MATLAB "Install the MOSEK MATLAB bindings" OFF)
 
-if(WITH_JAVA)
-  find_package(Java 1.6 MODULE REQUIRED)
-endif()
+if (WITH_JAVA)
+    find_package(Java 1.6 MODULE REQUIRED)
+endif ()
 
-if(WITH_MATLAB)
-  if(MOSEK_PLATFORM STREQUAL "osx64x86")
-    set(MOSEK_MINIMUM_MATLAB_RELEASE r2012a)
-    set(MOSEK_MINIMUM_MATLAB_VERSION 7.14)
-  else()
-    set(MOSEK_MINIMUM_MATLAB_RELEASE r2009b)
-    set(MOSEK_MINIMUM_MATLAB_VERSION 7.9)
-  endif()
+if (WITH_MATLAB)
+    if (MOSEK_PLATFORM STREQUAL "osx64x86")
+        set(MOSEK_MINIMUM_MATLAB_RELEASE r2012a)
+        set(MOSEK_MINIMUM_MATLAB_VERSION 7.14)
+    else ()
+        set(MOSEK_MINIMUM_MATLAB_RELEASE r2009b)
+        set(MOSEK_MINIMUM_MATLAB_VERSION 7.9)
+    endif ()
 
-  set(MATLAB_ADDITIONAL_VERSIONS "R2018a=9.4")
-  find_package(Matlab ${MOSEK_MINIMUM_MATLAB_VERSION} MODULE REQUIRED
-    COMPONENTS MAIN_PROGRAM
-  )
-endif()
+    set(MATLAB_ADDITIONAL_VERSIONS "R2018a=9.4")
+    find_package(Matlab ${MOSEK_MINIMUM_MATLAB_VERSION} MODULE REQUIRED
+            COMPONENTS MAIN_PROGRAM
+            )
+endif ()
 
-if(Java_FOUND OR Matlab_FOUND)
-  set(MOSEK_JAVA_DIR ${CMAKE_INSTALL_DATADIR}/java)
+if (Java_FOUND OR Matlab_FOUND)
+    set(MOSEK_JAVA_DIR ${CMAKE_INSTALL_DATADIR}/java)
 
-  if(Java_FOUND)
-    set(MOSEK_JAR mosek.jar)
-    set(MOSEK_JAR_FILES "${MOSEK_PLATFORM_DIR}/bin/${MOSEK_JAR}")
+    if (Java_FOUND)
+        set(MOSEK_JAR mosek.jar)
+        set(MOSEK_JAR_FILES "${MOSEK_PLATFORM_DIR}/bin/${MOSEK_JAR}")
 
-    configure_package_config_file(
-      mosek-java-targets.cmake.in mosek-java-targets-install.cmake
-      INSTALL_DESTINATION ${MOSEK_DIR}
-      PATH_VARS MOSEK_JAVA_DIR
-      NO_CHECK_REQUIRED_COMPONENTS_MACRO
-      NO_SET_AND_CHECK_MACRO
-    )
+        configure_package_config_file(
+                mosek-java-targets.cmake.in mosek-java-targets-install.cmake
+                INSTALL_DESTINATION ${MOSEK_DIR}
+                PATH_VARS MOSEK_JAVA_DIR
+                NO_CHECK_REQUIRED_COMPONENTS_MACRO
+                NO_SET_AND_CHECK_MACRO
+        )
 
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/mosek-java-targets-install.cmake"
-      DESTINATION ${MOSEK_DIR}
-      RENAME mosek-java-targets.cmake
-    )
+        install(FILES "${CMAKE_CURRENT_BINARY_DIR}/mosek-java-targets-install.cmake"
+                DESTINATION ${MOSEK_DIR}
+                RENAME mosek-java-targets.cmake
+                )
 
-    set(INCLUDE_MOSEK_JAVA_TARGETS
-      "include(\"\${CMAKE_CURRENT_LIST_DIR}/mosek-java-targets.cmake\")"
-    )
-  endif()
+        set(INCLUDE_MOSEK_JAVA_TARGETS
+                "include(\"\${CMAKE_CURRENT_LIST_DIR}/mosek-java-targets.cmake\")"
+                )
+    endif ()
 
-  if(Matlab_FOUND)
-    if(MOSEK_PLATFORM STREQUAL "linux32x86")
-      if(Matlab_VERSION VERSION_LESS 7.14)
-        set(MOSEK_MATLAB_RELEASE r2009b)
-        set(MOSEK_MATLAB_VERSION 7.9)
-      else()
-        set(MOSEK_MATLAB_RELEASE r2012a)
-        set(MOSEK_MATLAB_VERSION 7.14)
-      endif()
-    elseif(MOSEK_PLATFORM STREQUAL "osx64x86")
-      if(Matlab_VERSION VERSION_LESS 8.1)
-        set(MOSEK_MATLAB_RELEASE r2012a)
-        set(MOSEK_MATLAB_VERSION 7.14)
-      else()
-        set(MOSEK_MATLAB_RELEASE r2013a)
-        set(MOSEK_MATLAB_VERSION 8.1)
-      endif()
-    else()
-      if(Matlab_VERSION VERSION_LESS 7.14)
-        set(MOSEK_MATLAB_RELEASE r2009b)
-        set(MOSEK_MATLAB_VERSION 7.9)
-      elseif(Matlab_VERSION VERSION_LESS 8.1)
-        set(MOSEK_MATLAB_RELEASE r2012a)
-        set(MOSEK_MATLAB_VERSION 7.14)
-      else()
-        set(MOSEK_MATLAB_RELEASE r2013a)
-        set(MOSEK_MATLAB_VERSION 8.1)
-      endif()
-    endif()
+    if (Matlab_FOUND)
+        if (MOSEK_PLATFORM STREQUAL "linux32x86")
+            if (Matlab_VERSION VERSION_LESS 7.14)
+                set(MOSEK_MATLAB_RELEASE r2009b)
+                set(MOSEK_MATLAB_VERSION 7.9)
+            else ()
+                set(MOSEK_MATLAB_RELEASE r2012a)
+                set(MOSEK_MATLAB_VERSION 7.14)
+            endif ()
+        elseif (MOSEK_PLATFORM STREQUAL "osx64x86")
+            if (Matlab_VERSION VERSION_LESS 8.1)
+                set(MOSEK_MATLAB_RELEASE r2012a)
+                set(MOSEK_MATLAB_VERSION 7.14)
+            else ()
+                set(MOSEK_MATLAB_RELEASE r2013a)
+                set(MOSEK_MATLAB_VERSION 8.1)
+            endif ()
+        else ()
+            if (Matlab_VERSION VERSION_LESS 7.14)
+                set(MOSEK_MATLAB_RELEASE r2009b)
+                set(MOSEK_MATLAB_VERSION 7.9)
+            elseif (Matlab_VERSION VERSION_LESS 8.1)
+                set(MOSEK_MATLAB_RELEASE r2012a)
+                set(MOSEK_MATLAB_VERSION 7.14)
+            else ()
+                set(MOSEK_MATLAB_RELEASE r2013a)
+                set(MOSEK_MATLAB_VERSION 8.1)
+            endif ()
+        endif ()
 
-    message(STATUS
-      "MOSEK MATLAB closest version is ${MOSEK_MATLAB_VERSION} (${MOSEK_MATLAB_RELEASE})"
-    )
+        message(STATUS
+                "MOSEK MATLAB closest version is ${MOSEK_MATLAB_VERSION} (${MOSEK_MATLAB_RELEASE})"
+                )
 
-    set(MOSEKMATLAB_JAR mosekmatlab.jar)
-    list(APPEND MOSEK_JAR_FILES "${MOSEK_PLATFORM_DIR}/bin/${MOSEKMATLAB_JAR}")
+        set(MOSEKMATLAB_JAR mosekmatlab.jar)
+        list(APPEND MOSEK_JAR_FILES "${MOSEK_PLATFORM_DIR}/bin/${MOSEKMATLAB_JAR}")
 
-    configure_file(addpath_mosek.m.in addpath_mosek.m @ONLY)
-    configure_file(rmpath_mosek.m.in rmpath_mosek.m @ONLY)
+        configure_file(addpath_mosek.m.in addpath_mosek.m @ONLY)
+        configure_file(rmpath_mosek.m.in rmpath_mosek.m @ONLY)
 
-    install(FILES
-      "${CMAKE_CURRENT_BINARY_DIR}/addpath_mosek.m"
-      "${CMAKE_CURRENT_BINARY_DIR}/rmpath_mosek.m"
-      DESTINATION matlab
-    )
-  endif()
+        install(FILES
+                "${CMAKE_CURRENT_BINARY_DIR}/addpath_mosek.m"
+                "${CMAKE_CURRENT_BINARY_DIR}/rmpath_mosek.m"
+                DESTINATION matlab
+                )
+    endif ()
 
-  set(MOSEKJAVA_LIBRARY mosekjava)
+    set(MOSEKJAVA_LIBRARY mosekjava)
 
-  if(MOSEK_PLATFORM STREQUAL "osx64x86")
-    set(MOSEK_JNI_LIBRARY_SUFFIX .jnilib)
-  else()
-    set(MOSEK_JNI_LIBRARY_SUFFIX ${CMAKE_SHARED_LIBRARY_SUFFIX})
-  endif()
+    if (MOSEK_PLATFORM STREQUAL "osx64x86")
+        set(MOSEK_JNI_LIBRARY_SUFFIX .jnilib)
+    else ()
+        set(MOSEK_JNI_LIBRARY_SUFFIX ${CMAKE_SHARED_LIBRARY_SUFFIX})
+    endif ()
 
-  set(MOSEKJAVA_LIBRARY_FILE
-    "${CMAKE_SHARED_LIBRARY_PREFIX}${MOSEKJAVA_LIBRARY}${PROJECT_VERSION_MAJOR}_${PROJECT_VERSION_MINOR}${MOSEK_JNI_LIBRARY_SUFFIX}"
-  )
+    set(MOSEKJAVA_LIBRARY_FILE
+            "${CMAKE_SHARED_LIBRARY_PREFIX}${MOSEKJAVA_LIBRARY}${PROJECT_VERSION_MAJOR}_${PROJECT_VERSION_MINOR}${MOSEK_JNI_LIBRARY_SUFFIX}"
+            )
 
-  if(MOSEK_PLATFORM MATCHES "^win")
-    list(APPEND MOSEK_RUNTIME_FILES
-      "${MOSEK_PLATFORM_DIR}/bin/${MOSEKJAVA_LIBRARY_FILE}"
-    )
-  else()
-    list(APPEND MOSEK_LIBRARY_FILES
-      "${MOSEK_PLATFORM_DIR}/bin/${MOSEKJAVA_LIBRARY_FILE}"
-    )
+    if (MOSEK_PLATFORM MATCHES "^win")
+        list(APPEND MOSEK_RUNTIME_FILES
+                "${MOSEK_PLATFORM_DIR}/bin/${MOSEKJAVA_LIBRARY_FILE}"
+                )
+    else ()
+        list(APPEND MOSEK_LIBRARY_FILES
+                "${MOSEK_PLATFORM_DIR}/bin/${MOSEKJAVA_LIBRARY_FILE}"
+                )
 
-    if(MOSEK_PLATFORM STREQUAL "osx64x86")
-      mosek_change_dylib_id_name(${MOSEKJAVA_LIBRARY_FILE})
-    endif()
-  endif()
+        if (MOSEK_PLATFORM STREQUAL "osx64x86")
+            mosek_change_dylib_id_name(${MOSEKJAVA_LIBRARY_FILE})
+        endif ()
+    endif ()
 
-  install(FILES ${MOSEK_JAR_FILES} DESTINATION ${MOSEK_JAVA_DIR})
-endif()
+    install(FILES ${MOSEK_JAR_FILES} DESTINATION ${MOSEK_JAVA_DIR})
+endif ()
 
 option(WITH_PYTHON "Install the MOSEK Python bindings" ON)
 
-if(WITH_PYTHON)
-  find_package(PythonInterp 2.7 MODULE REQUIRED)
+if (WITH_PYTHON)
+    find_package(PythonInterp 2.7 MODULE REQUIRED)
 
-  message(STATUS
-    "MOSEK Python major version is ${PYTHON_VERSION_MAJOR}"
-  )
+    message(STATUS
+            "MOSEK Python major version is ${PYTHON_VERSION_MAJOR}"
+            )
 
-  set(MOSEK_PYTHON_DIR
-    lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages
-  )
+    set(MOSEK_PYTHON_DIR
+            lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages
+            )
 
-  install(DIRECTORY
-    "${MOSEK_PLATFORM_DIR}/python/${PYTHON_VERSION_MAJOR}/mosek"
-    DESTINATION ${MOSEK_PYTHON_DIR}
-  )
-endif()
+    install(DIRECTORY
+            "${MOSEK_PLATFORM_DIR}/python/${PYTHON_VERSION_MAJOR}/mosek"
+            DESTINATION ${MOSEK_PYTHON_DIR}
+            )
+endif ()
 
-if(Java_FOUND OR Matlab_FOUND OR Python_FOUND)
-  set(MOSEKSCOPT_LIBRARY mosekscopt)
-  set(MOSEKSCOPT_LIBRARY_FILE
-    "${CMAKE_SHARED_LIBRARY_PREFIX}${MOSEKSCOPT_LIBRARY}${PROJECT_VERSION_MAJOR}_${PROJECT_VERSION_MINOR}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-  )
+if (Java_FOUND OR Matlab_FOUND OR Python_FOUND)
+    set(MOSEKSCOPT_LIBRARY mosekscopt)
+    set(MOSEKSCOPT_LIBRARY_FILE
+            "${CMAKE_SHARED_LIBRARY_PREFIX}${MOSEKSCOPT_LIBRARY}${PROJECT_VERSION_MAJOR}_${PROJECT_VERSION_MINOR}${CMAKE_SHARED_LIBRARY_SUFFIX}"
+            )
 
-  set(MOSEKXX_LIBRARY mosekxx)
-  set(MOSEKXX_LIBRARY_FILE
-    "${CMAKE_SHARED_LIBRARY_PREFIX}${MOSEKXX_LIBRARY}${PROJECT_VERSION_MAJOR}_${PROJECT_VERSION_MINOR}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-  )
+    set(MOSEKXX_LIBRARY mosekxx)
+    set(MOSEKXX_LIBRARY_FILE
+            "${CMAKE_SHARED_LIBRARY_PREFIX}${MOSEKXX_LIBRARY}${PROJECT_VERSION_MAJOR}_${PROJECT_VERSION_MINOR}${CMAKE_SHARED_LIBRARY_SUFFIX}"
+            )
 
-  if(MOSEK_PLATFORM MATCHES "^win")
-    list(APPEND MOSEK_ARCHIVE_FILES
-      "${MOSEK_PLATFORM_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}${MOSEKSCOPT_LIBRARY}${PROJECT_VERSION_MAJOR}_${PROJECT_VERSION_MINOR}${CMAKE_STATIC_LIBRARY_SUFFIX}"
-    )
+    if (MOSEK_PLATFORM MATCHES "^win")
+        list(APPEND MOSEK_ARCHIVE_FILES
+                "${MOSEK_PLATFORM_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}${MOSEKSCOPT_LIBRARY}${PROJECT_VERSION_MAJOR}_${PROJECT_VERSION_MINOR}${CMAKE_STATIC_LIBRARY_SUFFIX}"
+                )
 
-    list(APPEND MOSEK_RUNTIME_FILES
-      "${MOSEK_PLATFORM_DIR}/bin/${MOSEKSCOPT_LIBRARY_FILE}"
-      "${MOSEK_PLATFORM_DIR}/bin/${MOSEKXX_LIBRARY_FILE}"
-    )
-  else()
-    list(APPEND MOSEK_LIBRARY_FILES
-      "${MOSEK_PLATFORM_DIR}/bin/${MOSEKSCOPT_LIBRARY_FILE}"
-      "${MOSEK_PLATFORM_DIR}/bin/${MOSEKXX_LIBRARY_FILE}"
-    )
+        list(APPEND MOSEK_RUNTIME_FILES
+                "${MOSEK_PLATFORM_DIR}/bin/${MOSEKSCOPT_LIBRARY_FILE}"
+                "${MOSEK_PLATFORM_DIR}/bin/${MOSEKXX_LIBRARY_FILE}"
+                )
+    else ()
+        list(APPEND MOSEK_LIBRARY_FILES
+                "${MOSEK_PLATFORM_DIR}/bin/${MOSEKSCOPT_LIBRARY_FILE}"
+                "${MOSEK_PLATFORM_DIR}/bin/${MOSEKXX_LIBRARY_FILE}"
+                )
 
-    if(MOSEK_PLATFORM STREQUAL "osx64x86")
-      mosek_change_dylib_id_name(${MOSEKSCOPT_LIBRARY_FILE})
-      mosek_change_dylib_id_name(${MOSEKXX_LIBRARY_FILE})
-    endif()
-  endif()
-endif()
+        if (MOSEK_PLATFORM STREQUAL "osx64x86")
+            mosek_change_dylib_id_name(${MOSEKSCOPT_LIBRARY_FILE})
+            mosek_change_dylib_id_name(${MOSEKXX_LIBRARY_FILE})
+        endif ()
+    endif ()
+endif ()
 
 install(FILES ${MOSEK_ARCHIVE_FILES} ${MOSEK_LIBRARY_FILES}
-  DESTINATION ${MOSEK_LIBRARY_DIR}
-)
+        DESTINATION ${MOSEK_LIBRARY_DIR}
+        )
 
-if(MOSEK_RUNTIME_FILES)
-  install(PROGRAMS ${MOSEK_RUNTIME_FILES} DESTINATION ${CMAKE_INSTALL_BINDIR})
-endif()
+if (MOSEK_RUNTIME_FILES)
+    install(PROGRAMS ${MOSEK_RUNTIME_FILES} DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif ()
 
 install(FILES
-  "${CMAKE_CURRENT_BINARY_DIR}/mosek/${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}/mosek-eula.pdf"
-  DESTINATION ${CMAKE_INSTALL_DOCDIR}
-)
+        "${CMAKE_CURRENT_BINARY_DIR}/mosek/${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}/mosek-eula.pdf"
+        DESTINATION ${CMAKE_INSTALL_DOCDIR}
+        )
 
 configure_package_config_file(mosek-config.cmake.in mosek-config.cmake
-  INSTALL_DESTINATION ${MOSEK_DIR}
-  PATH_VARS MOSEK_INCLUDE_DIR MOSEK_LIBRARY_DIR
-  NO_CHECK_REQUIRED_COMPONENTS_MACRO
-)
+        INSTALL_DESTINATION ${MOSEK_DIR}
+        PATH_VARS MOSEK_INCLUDE_DIR MOSEK_LIBRARY_DIR
+        NO_CHECK_REQUIRED_COMPONENTS_MACRO
+        )
 
 write_basic_package_version_file(mosek-config-version.cmake
-  COMPATIBILITY SameMajorVersion
-)
+        COMPATIBILITY SameMajorVersion
+        )
 
 install(FILES
-  "${CMAKE_CURRENT_BINARY_DIR}/mosek-config.cmake"
-  "${CMAKE_CURRENT_BINARY_DIR}/mosek-config-version.cmake"
-  DESTINATION ${MOSEK_DIR}
-)
+        "${CMAKE_CURRENT_BINARY_DIR}/mosek-config.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/mosek-config-version.cmake"
+        DESTINATION ${MOSEK_DIR}
+        )
 
 add_subdirectory(test)
